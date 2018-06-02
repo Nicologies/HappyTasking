@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { Switch, Route } from 'react-router';
-import App from './containers/App';
+import { Route } from 'react-router';
 import HomePage from './containers/HomePage';
 import CounterPage from './containers/CounterPage';
 
-export default () => (
-  <App>
-    <Switch>
+export default function Routes() {
+  return (
+    <div>
       <Route path="/counter" component={CounterPage} />
       <Route path="/" component={HomePage} />
-    </Switch>
-  </App>
-);
+    </div>
+  );
+}

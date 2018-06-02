@@ -14,17 +14,17 @@ declare const window: Window & {
 declare const module: NodeModule & {
   hot?: {
     accept(...args: any[]): any;
-  }
+  },
 };
 
-const actionCreators = Object.assign({}, 
+const actionCreators = Object.assign({},
   counterActions,
-  {push}
+  { push },
 );
 
-const logger = (<any>createLogger)({
+const logger = (createLogger as any)({
   level: 'info',
-  collapsed: true
+  collapsed: true,
 });
 
 const history = createHashHistory();
@@ -35,25 +35,25 @@ const router = routerMiddleware(history);
 const composeEnhancers: typeof compose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
   window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
     // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
-    actionCreators
+    actionCreators,
   }) as any :
   compose;
 /* eslint-enable no-underscore-dangle */
 const enhancer = composeEnhancers(
-  applyMiddleware(thunk, router, logger)
+  applyMiddleware(thunk, router, logger),
 );
 
 export = {
   history,
-  configureStore(initialState: Object | void) {
+  configureStore(initialState: object | void) {
     const store = createStore(rootReducer, initialState, enhancer);
 
     if (module.hot) {
       module.hot.accept('../reducers', () =>
-        store.replaceReducer(require('../reducers')) // eslint-disable-line global-require
+        store.replaceReducer(require('../reducers')),
       );
     }
 
     return store;
-  }
+  },
 };
