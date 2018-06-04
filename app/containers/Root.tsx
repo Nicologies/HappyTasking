@@ -4,8 +4,7 @@ import { History } from 'history';
 
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
-import App from './App';
-
+import Routes from '../routes';
 interface IRootType {
   store: Redux.Store<any>;
   history: History;
@@ -15,7 +14,7 @@ export default function Root({ store, history }: IRootType) {
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <App />
+        <Routes />
       </ConnectedRouter>
     </Provider>
   );

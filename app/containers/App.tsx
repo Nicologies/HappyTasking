@@ -2,9 +2,7 @@ import * as React from 'react';
 import { WithStyles, Drawer, IconButton, Divider, Grid, AppBar, Button, Toolbar } from '@material-ui/core';
 import withRoot from './WithRoot';
 import withStyles, { StyleRulesCallback } from '@material-ui/core/styles/withStyles';
-import { Router, RouteComponentProps } from 'react-router';
-import createBrowserHistory from 'history/createBrowserHistory';
-import Routes from '../routes';
+import { RouteComponentProps, withRouter } from 'react-router';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddIcon from '@material-ui/icons/Add';
@@ -12,19 +10,16 @@ import { IState } from '../reducers';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 import * as drawerActions from '../actions/drawerStateAction';
-import * as showCreateNewPipelinePageActions from '../actions/showCreateNewPipelinePage';
+import { Link } from 'react-router-dom';
 
 interface IAppProps extends RouteComponentProps<any> {
   drawerState: boolean;
   toggleDrawerDispatcher: () => void;
-  showCreateNewPipelinePageDispatcher: () => void;
 }
-
-const history = createBrowserHistory();
 
 class App extends React.Component<WithStyles & IAppProps> {
   render() {
-    const { classes, toggleDrawerDispatcher, drawerState, showCreateNewPipelinePageDispatcher } = this.props;
+    const { classes, toggleDrawerDispatcher, drawerState } = this.props;
     return (
       <Grid>
         <AppBar position="static">
@@ -35,8 +30,14 @@ class App extends React.Component<WithStyles & IAppProps> {
             >
               <MenuIcon color='action' />
             </IconButton>
-            <Button variant="fab" color="primary" aria-label="add" onClick={showCreateNewPipelinePageDispatcher}>
-              <AddIcon />
+            <Link to="/new">
+              <Button
+                variant="fab" color="primary" aria-label="add">
+                <AddIcon />
+              </Button>
+            </Link>
+            <Button onClick={() => this.props.history.push("/")}>
+              Home
             </Button>
             <Button>
               Categories
@@ -61,9 +62,9 @@ class App extends React.Component<WithStyles & IAppProps> {
           </div>
           <Divider />
         </Drawer>
-        <Router history={history}>
-          {Routes()}
-        </Router>
+        <div className={classes.mainContainer}>
+          {this.props.children}
+        </div>
       </Grid>
     );
   }
@@ -80,6 +81,9 @@ const styles: StyleRulesCallback = theme => ({
   drawerPaper: {
     "min-width": '200px',
   },
+  mainContainer: {
+    'margin-top': '10px',
+  },
 });
 
 function mapStateToProps(state: IState): Partial<IAppProps> {
@@ -89,7 +93,7 @@ function mapStateToProps(state: IState): Partial<IAppProps> {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IState>): Partial<IAppProps> {
-  return bindActionCreators({ ...drawerActions, ...showCreateNewPipelinePageActions }, dispatch);
+  return bindActionCreators({ ...drawerActions }, dispatch);
 }
 
-export default withRoot(withStyles(styles)<{}>((connect(mapStateToProps, mapDispatchToProps)(App))));
+export default withRouter(withRoot(withStyles(styles)<{}>((connect(mapStateToProps, mapDispatchToProps)(App)))));
