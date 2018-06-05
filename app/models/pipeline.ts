@@ -5,6 +5,7 @@ export interface ITask {
 }
 
 export interface IPipeline {
+  id: string;
   pipelineName: string;
   tasks: ITask[];
 }

@@ -1,10 +1,13 @@
-import { createStore, applyMiddleware, compose, Store } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, push } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 import * as drawerActions from '../actions/drawerStateAction';
+import createElectronStorage from "redux-persist-electron-storage";
+import { persistStore, persistReducer } from 'redux-persist';
+import { IStoreWithPersistor } from './IStoreWithPersistor';
 
 declare const window: Window & {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?(a: any): void;
@@ -29,6 +32,13 @@ const logger = (createLogger as any)({
 const history = createHashHistory();
 const router = routerMiddleware(history);
 
+const persistConfig = {
+  key: 'root',
+  storage: createElectronStorage(),
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers: typeof compose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
@@ -44,15 +54,15 @@ const enhancer = composeEnhancers(
 
 export = {
   history,
-  configureStore(initialState: object | void): Store<object | void> {
-    const store = createStore(rootReducer, initialState, enhancer);
-
+  configureStore(initialState: object | void): IStoreWithPersistor {
+    const store = createStore(persistedReducer, initialState, enhancer);
+    const persistor = persistStore(store);
     if (module.hot) {
       module.hot.accept('../reducers', () =>
         store.replaceReducer(require('../reducers').default),
       );
     }
 
-    return store;
+    return { store, persistor };
   },
 };

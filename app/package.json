@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-typescript-boilerplate",
-  "productName": "electron-typescript-react-boilerplate",
+  "name": "happy-tasksing",
+  "productName": "HappyTasking",
   "version": "1.0.0",
-  "description": "Electron application boilerplate based on TypeScript, React, React Router, Webpack, React Hot Loader for rapid application development",
+  "description": "Happy tasking",
   "main": "./main.js",
   "author": {
     "name": "Alexander Rath",

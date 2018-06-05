@@ -1,12 +1,9 @@
 import * as React from 'react';
 import withRoot from '../containers/WithRoot';
 import { FormControl, TextField, Card, CardContent, CardHeader, Button, WithStyles } from '@material-ui/core';
-import { remote } from 'electron';
-import * as path from 'path';
-import * as fs from "fs";
-import * as uuidv4 from "uuid/v4";
 import { RouteComponentProps } from 'react-router';
 import { IPipeline } from '../models/pipeline';
+import * as uuidv4 from 'uuid/v4';
 
 interface INewPipelineState {
   pipelineName: string;
@@ -30,6 +27,7 @@ export class NewPipeline extends React.Component<WithStyles & INewPipelinePagePr
   createNew(e: React.FormEvent<any>) {
     const toPipeline = (state: INewPipelineState) => {
       const ret: IPipeline = {
+        id: uuidv4(),
         pipelineName: state.pipelineName,
         tasks: [{
           taskName: state.taskName,
@@ -41,21 +39,8 @@ export class NewPipeline extends React.Component<WithStyles & INewPipelinePagePr
     };
 
     e.preventDefault();
-    const appData = remote.app.getPath("appData");
-    const appDir = path.join(appData, "HappyTasking");
-    this.mkdir(appDir);
-    const pipelineDir = path.join(appDir, "Pipelines");
-    this.mkdir(pipelineDir);
-    const pipelineFile = path.join(pipelineDir, uuidv4() + ".json");
     const pipeline = toPipeline(this.state);
-    fs.writeFileSync(pipelineFile, JSON.stringify(pipeline));
     this.props.newPipelineActionDispatcher(pipeline);
-  }
-
-  mkdir(dir: string) {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
   }
 
   render() {

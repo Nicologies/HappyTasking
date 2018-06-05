@@ -11,9 +11,11 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 import * as drawerActions from '../actions/drawerStateAction';
 import { Link } from 'react-router-dom';
+import { IPipeline } from '../models/pipeline';
 
 interface IAppProps extends RouteComponentProps<any> {
   drawerState: boolean;
+  pipelines: IPipeline[];
   toggleDrawerDispatcher: () => void;
 }
 
@@ -42,7 +44,7 @@ class App extends React.Component<WithStyles & IAppProps> {
             <Button>
               Categories
             </Button>
-            <Button>
+            <Button onClick={() => this.props.history.push("/pipelines")}>
               Pipelines
             </Button>
           </Toolbar>
@@ -89,6 +91,7 @@ const styles: StyleRulesCallback = theme => ({
 function mapStateToProps(state: IState): Partial<IAppProps> {
   return {
     drawerState: state.drawerState,
+    pipelines: state.pipelines,
   };
 }
 
